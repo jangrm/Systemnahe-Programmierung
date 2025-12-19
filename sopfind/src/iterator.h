@@ -21,10 +21,18 @@ typedef struct {
 } FileInfo;
 
 
-void  iterator(){
+typedef struct Stack {
+     char *path;
+     struct Stack *next;
+     
+} Stack;
+
+void push(Stack **top , const char *path);
+char *pop(Stack **top);
+
+typedef struct Iterator Iterator;
 
 
-}
 
 
 
