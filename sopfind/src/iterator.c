@@ -44,4 +44,12 @@ int push(Stack **top, const char *path){
 
 }
 
+char pop(Stack **top){
+ if(*top == NULL){return NULL;}
+   Stack *tmp = *top;
+   char path = tmp->path;
+   *top = *(tmp)->next;
+   free(tmp);
+   return path;
+}
 
