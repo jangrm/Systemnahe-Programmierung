@@ -32,3 +32,16 @@ Iterator *iterator_init(const char *start_path){
 }
 
 
+int push(Stack **top, const char *path){
+  Stack *new = malloc(sizeof(Stack));
+  if(new == NULL){return -1;}
+     new->path = strdup(path); // strdup damit der pfad dem Stack gehört
+     new->next = *top;
+
+  if(new->path == NULL){free(new); return -1;}   
+     *top = new;
+     return 0;
+
+}
+
+
