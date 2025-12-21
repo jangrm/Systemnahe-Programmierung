@@ -31,6 +31,29 @@ Iterator *iterator_init(const char *start_path){
  return new;
 }
 
+void iterator_destroy(Iterator *it){
+ if(it == NULL){return;}
+
+ if(it->current_dir != NULL){
+   closedir(it->current_dir);
+   it->current_dir = NULL;
+ }
+
+ if(it->current_path != NULL){
+   free(it->current_path);
+   it->current_path = NULL;
+ }
+
+ char *p;
+ while ((p = pop(&it->stack)) != NULL){
+   free(p);
+ }
+ free(it);
+
+}
+
+
+
 
 int push(Stack **top, const char *path){
   Stack *new = malloc(sizeof(Stack));
