@@ -1,8 +1,8 @@
-#include <stdio.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef ITERATOR
-#define ITERATOR
+#ifndef SOP_ITERATOR
+#define SOP_ITERATOR
 
 typedef enum {
     FI_FILE, // Reguläre Datei
@@ -32,6 +32,10 @@ char *pop(Stack **top);
 
 typedef struct Iterator Iterator;
 
+Iterator *iterator_init(const char *start_path);
+int iterator_next(Iterator *it, FileInfo *out);
+void iterator_destroy(Iterator *it);
+void fileinfo_free(FileInfo *info);
 
 
 
