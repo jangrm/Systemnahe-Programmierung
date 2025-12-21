@@ -27,7 +27,7 @@ typedef struct Stack {
      
 } Stack;
 
-void push(Stack **top , const char *path);
+int push(Stack **top , const char *path);
 char *pop(Stack **top);
 
 typedef struct Iterator Iterator;
