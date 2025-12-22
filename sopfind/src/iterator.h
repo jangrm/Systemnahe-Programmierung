@@ -33,7 +33,7 @@ char *pop(Stack **top);
 typedef struct Iterator Iterator;
 
 Iterator *iterator_init(const char *start_path);
-int iterator_next(Iterator *it);
+int iterator_next(Iterator *it, FileInfo *out);
 void iterator_destroy(Iterator *it);
 void fileinfo_free(FileInfo *info);
 
