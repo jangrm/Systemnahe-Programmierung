@@ -1,6 +1,7 @@
 # Build Artifacts
 build/
-./sopfind
+sopfind
+*.out
 
 #Vim
 *.swp
