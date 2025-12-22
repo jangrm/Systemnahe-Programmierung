@@ -143,10 +143,14 @@ int iterator_next(Iterator *it, FileInfo *out){
          
 	 // Path setzen
 	 it->current_path = dirpath;
+
+       }
 	 
-	 // Eintrag lesen
-	 struct dirent *entry = readdir(it->current_dir);
-	 if(entry == NULL){
+       // Eintrag lesen
+        struct dirent *entry = readdir(it->current_dir);
+
+
+       if(entry == NULL){
 	  closedir(it->current_dir);
           it->current_dir = NULL;
 
@@ -155,6 +159,8 @@ int iterator_next(Iterator *it, FileInfo *out){
 
 	  // nächstes Verzeichniss
 	  continue;
+
+       }
 
 	  // . und .. überspringen
 	  
@@ -189,19 +195,14 @@ int iterator_next(Iterator *it, FileInfo *out){
 	  if(out->type == FI_DIR){
            push(&it->stack, fullpath);
 	  }
-	  if(out->type == FI_FILE){
-	   push(&it->stack, fullpath);
-	  }
 
 
           return 1;
 	 }
        
-       }
        
-      }
        
-
+      
 }
 
 
