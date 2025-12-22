@@ -1,10 +1,13 @@
 #include "iterator.h"
+#define _POSIX_C_SOURCE 200809L
 
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <stdbool.h>
+#include <unistd.h>
 
 static FileType classify(mode_t mode){
  FileType type;
@@ -80,9 +83,9 @@ Iterator *iterator_init(const char *start_path){
  Iterator *new = malloc(sizeof(Iterator));
 
  if(new == NULL){return NULL;}
-	 new->*stack = NULL;
-	 new->*current_dir = NULL;
-	 new->*current_path = NULL;
+	 new->stack = NULL;
+	 new->current_dir = NULL;
+	 new->current_path = NULL;
   
  int i = push(&new->stack, start_path);
 
@@ -118,7 +121,7 @@ void iterator_destroy(Iterator *it){
 }
 
 
-void iterator_next(Iterator *it, FileInfo *out){
+int iterator_next(Iterator *it, FileInfo *out){
        out->path = NULL;
 
        while(true){
@@ -126,7 +129,7 @@ void iterator_next(Iterator *it, FileInfo *out){
        // Wenn kein verzeichniss offen ist; nimme das nächste vom stack
        
        if(it->current_dir == NULL){
-         char dirpath = pop(&it->stack);
+         char *dirpath = pop(&it->stack);
 	 if(dirpath == NULL){
 	 return 0; // NIchts zu tun
 	 }
@@ -142,9 +145,9 @@ void iterator_next(Iterator *it, FileInfo *out){
 	 it->current_path = dirpath;
 	 
 	 // Eintrag lesen
-	 entry = readdir(it->current_dir);
+	 struct dirent *entry = readdir(it->current_dir);
 	 if(entry == NULL){
-	  closedir(it->current_dir)
+	  closedir(it->current_dir);
           it->current_dir = NULL;
 
 	  free(it->current_path);
@@ -155,20 +158,22 @@ void iterator_next(Iterator *it, FileInfo *out){
 
 	  // . und .. überspringen
 	  
-	  if(entry.name == "." || entry.name == ".."){
+	  if(strcmp(entry->d_name,".") == 0 || strcmp(entry->d_name,"..") == 0){
             continue;
 	  }
 
 
           // Pfad bauen
 
-	  fullpath = join_path(it->current_path, entry.name)
+	  char *fullpath = join_path(it->current_path, entry->d_name);
 	  if(fullpath == NULL){
 	   return -1;
 	  }
 
+	  struct stat st;
+
 	  // MEtadaten holen
-	  if(lstat(fullpath, &st) == NULL){
+	  if(lstat(fullpath, &st) != 0){
 	    free(fullpath);
 	    continue;
 	  }
@@ -184,6 +189,11 @@ void iterator_next(Iterator *it, FileInfo *out){
 	  if(out->type == FI_DIR){
            push(&it->stack, fullpath);
 	  }
+	  if(out->type == FI_FILE){
+	   push(&it->stack, fullpath);
+	  }
+
+
           return 1;
 	 }
        
@@ -220,12 +230,12 @@ int push(Stack **top, const char *path){
 
 }
 
-char pop(Stack **top){
+char *pop(Stack **top){
  if(*top == NULL){return NULL;}
 
    Stack *tmp = *top;
-   char path = tmp->path;
-   *top = *(tmp)->next;
+   char *path = tmp->path;
+   *top = tmp->next;
 
    free(tmp);
    return path;

@@ -4,19 +4,19 @@
 int main(){
     Iterator *it = iterator_init(".");
     if(it == NULL){
-     printf(stderr, "iterator_init failed \n");
+     fprintf(stderr, "iterator_init failed \n");
     }
 
     FileInfo info;
 
     while (1){
-     int r = iterator_next(it, &info)
+     int r = iterator_next(it, &info);
      if(r == 0){
        break;
      }
 
      if(r < 0){
-      printf(stderr, "iterator_next error \n");
+      fprintf(stderr, "iterator_next error \n");
      }
 
      printf("%s\n", info.path);
