@@ -10,4 +10,7 @@ typedef struct FilterNode {
     struct FilterNode *next;
 } FilterNode;
 
+void add_filter(FilterNode **head, const char *data);
+int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path, const struct stat *st);
+
 #endif

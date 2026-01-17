@@ -27,3 +27,20 @@ void add_filter(FilterNode **head, const char *data) {
         current->next = new_node;
     }
 }
+
+int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path, const struct stat *st) {
+    if (predicate == NULL) {
+        return 0;
+    }
+
+    FilterNode *current = head;
+    while (current != NULL) {
+        int passed = predicate(path, st, current->data);
+        if (passed == 0) {
+            return 0;
+        }
+        current = current->next;
+    }
+
+    return 1;
+}
