@@ -12,5 +12,6 @@ typedef struct FilterNode {
 
 void add_filter(FilterNode **head, const char *data);
 int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path, const struct stat *st);
+void free_filters(FilterNode *head);
 
 #endif

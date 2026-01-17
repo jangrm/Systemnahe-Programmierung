@@ -44,3 +44,13 @@ int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path
 
     return 1;
 }
+
+void free_filters(FilterNode *head) {
+    FilterNode *current = head;
+    while (current != NULL) {
+        FilterNode *next = current->next;
+        free(current->data);
+        free(current);
+        current = next;
+    }
+}
