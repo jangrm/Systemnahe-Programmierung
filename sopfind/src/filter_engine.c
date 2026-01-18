@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Forward declarations for filter functions
+int filter_name(const char *path, const struct stat *st, void *data);
+int filter_type(const char *path, const struct stat *st, void *data);
+
 void add_filter(FilterNode **head, void *data) {
     FilterNode *new_node = malloc(sizeof(FilterNode));
     if (new_node == NULL) {
@@ -45,5 +49,29 @@ void free_filters(FilterNode *head) {
         FilterNode *next = current->next;
         free(current);
         current = next;
+    }
+}
+
+void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]) {
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-name") == 0) {
+            if (i + 1 < argc) {
+                char *name_pattern = malloc(strlen(argv[i + 1]) + 1);
+                if (name_pattern != NULL) {
+                    strcpy(name_pattern, argv[i + 1]);
+                    add_filter(filter_head, (void *)name_pattern);
+                }
+                i++;
+            }
+        } else if (strcmp(argv[i], "-type") == 0) {
+            if (i + 1 < argc) {
+                char *type_char = malloc(sizeof(char));
+                if (type_char != NULL) {
+                    *type_char = argv[i + 1][0];
+                    add_filter(filter_head, (void *)type_char);
+                }
+                i++;
+            }
+        }
     }
 }

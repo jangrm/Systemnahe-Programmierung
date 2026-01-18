@@ -1,19 +1,21 @@
 #include <stdio.h>
 #include <string.h>
 #include "iterator.h"
+#include "filter.h"
 
 int main(int argc,char *argv[]){
     const char *start_path = "/";
+    FilterNode *filter_head = NULL;
 
-
-    if (argc == 1){
-	// Default
-    }else if(argc == 3 && strcmp(argv[1], "-p")== 0){
-      start_path = argv[2];
-    } else {
-      fprintf(stderr, "Usage: [-p <path>] \n");
-      return 1;
+    // Parse -p argument if present
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+            start_path = argv[i + 1];
+            break;
+        }
     }
+
+    parse_argv_filters(&filter_head, argc, argv);
 
     Iterator *it = iterator_init(start_path);
     if(!it){
@@ -39,6 +41,7 @@ int main(int argc,char *argv[]){
     
     }
     iterator_destroy(it);
+    free_filters(filter_head);
     return 0;
 
 }
