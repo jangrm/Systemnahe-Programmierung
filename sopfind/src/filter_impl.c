@@ -1,5 +1,6 @@
 #include <string.h>
 #include <sys/stat.h>
+#include <fnmatch.h>
 
 int filter_name(const char *path, const struct stat *st, void *data)
 {
@@ -15,5 +16,5 @@ int filter_name(const char *path, const struct stat *st, void *data)
         filename = slash + 1;
     }
     
-    return strcmp(filename, (const char *)data) == 0;
+    return fnmatch((const char *)data, filename, 0) == 0;
 }
