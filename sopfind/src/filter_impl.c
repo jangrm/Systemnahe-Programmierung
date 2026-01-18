@@ -18,3 +18,17 @@ int filter_name(const char *path, const struct stat *st, void *data)
     
     return fnmatch((const char *)data, filename, 0) == 0;
 }
+
+int filter_type(const char *path, const struct stat *st, void *data)
+{
+    (void)path;
+    char type = *(char *)data;
+    
+    if (type == 'f') {
+        return S_ISREG(st->st_mode);
+    } else if (type == 'd') {
+        return S_ISDIR(st->st_mode);
+    }
+    
+    return 0;
+}
