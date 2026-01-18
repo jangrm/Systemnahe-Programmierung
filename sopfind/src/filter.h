@@ -6,11 +6,11 @@
 typedef int (*PredicateFunc)(const char *path, const struct stat *st, void *data);
 
 typedef struct FilterNode {
-    char *data;
+    void *data;
     struct FilterNode *next;
 } FilterNode;
 
-void add_filter(FilterNode **head, const char *data);
+void add_filter(FilterNode **head, void *data);
 int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path, const struct stat *st);
 void free_filters(FilterNode *head);
 

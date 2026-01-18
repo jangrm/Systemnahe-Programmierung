@@ -2,19 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-void add_filter(FilterNode **head, const char *data) {
+void add_filter(FilterNode **head, void *data) {
     FilterNode *new_node = malloc(sizeof(FilterNode));
     if (new_node == NULL) {
         return;
     }
     
-    new_node->data = malloc(strlen(data) + 1);
-    if (new_node->data == NULL) {
-        free(new_node);
-        return;
-    }
-    
-    strcpy(new_node->data, data);
+    new_node->data = data;
     new_node->next = NULL;
     
     if (*head == NULL) {
@@ -49,7 +43,6 @@ void free_filters(FilterNode *head) {
     FilterNode *current = head;
     while (current != NULL) {
         FilterNode *next = current->next;
-        free(current->data);
         free(current);
         current = next;
     }
