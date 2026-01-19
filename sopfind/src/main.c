@@ -36,12 +36,9 @@ int main(int argc,char *argv[]){
       printf("%s\n", info.path);
 
       fileinfo_free(&info);
-    
+
     }
     iterator_destroy(it);
     return 0;
 
 }
-
-
-
