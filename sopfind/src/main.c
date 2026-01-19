@@ -1,19 +1,23 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 #include "iterator.h"
+#include "filter.h"
 
 int main(int argc,char *argv[]){
     const char *start_path = "/";
+    FilterNode *filter_head = NULL;
 
-
-    if (argc == 1){
-	// Default
-    }else if(argc == 3 && strcmp(argv[1], "-p")== 0){
-      start_path = argv[2];
-    } else {
-      fprintf(stderr, "Usage: [-p <path>] \n");
-      return 1;
+    // Parse -p argument if present
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+            start_path = argv[i + 1];
+            i++;
+            continue;
+        }
     }
+
+    parse_argv_filters(&filter_head, argc, argv);
 
     Iterator *it = iterator_init(start_path);
     if(!it){
@@ -33,12 +37,26 @@ int main(int argc,char *argv[]){
          fprintf(stderr, "Iterator error\n");
          break;
       }
-      printf("%s\n", info.path);
+
+        struct stat st = {0};
+        st.st_mode = info.mode;
+        st.st_size = info.size;
+        st.st_mtime = info.mtime;
+
+        int passes = 1;
+        if (filter_head != NULL) {
+          passes = evaluate_filters(filter_head, info.path, &st);
+        }
+
+        if (passes) {
+          printf("%s\n", info.path);
+        }
 
       fileinfo_free(&info);
     
     }
     iterator_destroy(it);
+    free_filters(filter_head);
     return 0;
 
 }
