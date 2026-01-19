@@ -32,3 +32,12 @@ int filter_type(const char *path, const struct stat *st, void *data)
     
     return 0;
 }
+
+int filter_size(const char *path, const struct stat *st, void *data)
+{
+    (void)path;
+    long size = *(long *)data;
+    long file_size = (long)st->st_size;
+    
+    return file_size == size;
+}
