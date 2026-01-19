@@ -15,4 +15,8 @@ int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path
 void free_filters(FilterNode *head);
 void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]);
 
+int filter_name(const char *path, const struct stat *st, void *data);
+int filter_type(const char *path, const struct stat *st, void *data);
+int filter_size(const char *path, const struct stat *st, void *data);
+
 #endif
