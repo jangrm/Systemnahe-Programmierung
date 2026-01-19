@@ -2,6 +2,11 @@
 #include <sys/stat.h>
 #include <fnmatch.h>
 
+typedef struct {
+    long size;
+    char mode;  // '+' = größer als, '-' = kleiner als, '=' = genau
+} size_filter_data;
+
 int filter_name(const char *path, const struct stat *st, void *data)
 {
     (void)st;
@@ -36,8 +41,14 @@ int filter_type(const char *path, const struct stat *st, void *data)
 int filter_size(const char *path, const struct stat *st, void *data)
 {
     (void)path;
-    long size = *(long *)data;
+    size_filter_data *size_data = (size_filter_data *)data;
     long file_size = (long)st->st_size;
     
-    return file_size == size;
+    if (size_data->mode == '+') {
+        return file_size > size_data->size;
+    } else if (size_data->mode == '-') {
+        return file_size < size_data->size;
+    } else {
+        return file_size == size_data->size;
+    }
 }

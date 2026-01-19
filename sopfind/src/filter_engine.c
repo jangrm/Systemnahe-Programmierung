@@ -5,6 +5,12 @@
 // Forward declarations for filter functions
 int filter_name(const char *path, const struct stat *st, void *data);
 int filter_type(const char *path, const struct stat *st, void *data);
+int filter_size(const char *path, const struct stat *st, void *data);
+
+typedef struct {
+    long size;
+    char mode;  // '+' = größer als, '-' = kleiner als, '=' = genau
+} size_filter_data;
 
 void add_filter(FilterNode **head, void *data) {
     FilterNode *new_node = malloc(sizeof(FilterNode));
@@ -69,6 +75,25 @@ void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]) {
                 if (type_char != NULL) {
                     *type_char = argv[i + 1][0];
                     add_filter(filter_head, (void *)type_char);
+                }
+                i++;
+            }
+        } else if (strcmp(argv[i], "-size") == 0) {
+            if (i + 1 < argc) {
+                size_filter_data *size_data = malloc(sizeof(size_filter_data));
+                if (size_data != NULL) {
+                    char *arg = argv[i + 1];
+                    if (arg[0] == '+') {
+                        size_data->mode = '+';
+                        size_data->size = atol(arg + 1);
+                    } else if (arg[0] == '-') {
+                        size_data->mode = '-';
+                        size_data->size = atol(arg + 1);
+                    } else {
+                        size_data->mode = '=';
+                        size_data->size = atol(arg);
+                    }
+                    add_filter(filter_head, (void *)size_data);
                 }
                 i++;
             }
