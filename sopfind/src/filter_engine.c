@@ -2,22 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Forward declarations for filter functions
+// Forward declarations for filter functions (implemented in filter_impl.c)
 int filter_name(const char *path, const struct stat *st, void *data);
 int filter_type(const char *path, const struct stat *st, void *data);
 int filter_size(const char *path, const struct stat *st, void *data);
+int filter_mtime(const char *path, const struct stat *st, void *data);
 
-typedef struct {
-    long size;
-    char mode;  // '+' = größer als, '-' = kleiner als, '=' = genau
-} size_filter_data;
-
-void add_filter(FilterNode **head, void *data) {
+void add_filter(FilterNode **head, PredicateFunc pred, void *data) {
     FilterNode *new_node = malloc(sizeof(FilterNode));
     if (new_node == NULL) {
         return;
     }
     
+    new_node->pred = pred;
     new_node->data = data;
     new_node->next = NULL;
     
@@ -32,14 +29,13 @@ void add_filter(FilterNode **head, void *data) {
     }
 }
 
-int evaluate_filters(FilterNode *head, PredicateFunc predicate, const char *path, const struct stat *st) {
-    if (predicate == NULL) {
-        return 0;
-    }
-
+int evaluate_filters(FilterNode *head, const char *path, const struct stat *st) {
     FilterNode *current = head;
     while (current != NULL) {
-        int passed = predicate(path, st, current->data);
+        if (current->pred == NULL) {
+            return 0;
+        }
+        int passed = current->pred(path, st, current->data);
         if (passed == 0) {
             return 0;
         }
@@ -53,6 +49,9 @@ void free_filters(FilterNode *head) {
     FilterNode *current = head;
     while (current != NULL) {
         FilterNode *next = current->next;
+        if (current->data != NULL) {
+            free(current->data);
+        }
         free(current);
         current = next;
     }
@@ -65,7 +64,7 @@ void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]) {
                 char *name_pattern = malloc(strlen(argv[i + 1]) + 1);
                 if (name_pattern != NULL) {
                     strcpy(name_pattern, argv[i + 1]);
-                    add_filter(filter_head, (void *)name_pattern);
+                    add_filter(filter_head, filter_name, (void *)name_pattern);
                 }
                 i++;
             }
@@ -74,7 +73,7 @@ void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]) {
                 char *type_char = malloc(sizeof(char));
                 if (type_char != NULL) {
                     *type_char = argv[i + 1][0];
-                    add_filter(filter_head, (void *)type_char);
+                    add_filter(filter_head, filter_type, (void *)type_char);
                 }
                 i++;
             }
@@ -93,7 +92,26 @@ void parse_argv_filters(FilterNode **filter_head, int argc, char *argv[]) {
                         size_data->mode = '=';
                         size_data->size = atol(arg);
                     }
-                    add_filter(filter_head, (void *)size_data);
+                    add_filter(filter_head, filter_size, (void *)size_data);
+                }
+                i++;
+            }
+        } else if (strcmp(argv[i], "-mtime") == 0) {
+            if (i + 1 < argc) {
+                mtime_filter_data *mtime_data = malloc(sizeof(mtime_filter_data));
+                if (mtime_data != NULL) {
+                    char *arg = argv[i + 1];
+                    if (arg[0] == '+') {
+                        mtime_data->mode = '+';
+                        mtime_data->days = atol(arg + 1);
+                    } else if (arg[0] == '-') {
+                        mtime_data->mode = '-';
+                        mtime_data->days = atol(arg + 1);
+                    } else {
+                        mtime_data->mode = '=';
+                        mtime_data->days = atol(arg);
+                    }
+                    add_filter(filter_head, filter_mtime, (void *)mtime_data);
                 }
                 i++;
             }

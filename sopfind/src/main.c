@@ -7,23 +7,14 @@
 int main(int argc,char *argv[]){
     const char *start_path = "/";
     FilterNode *filter_head = NULL;
-  PredicateFunc predicate = NULL;
 
     // Parse -p argument if present
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
             start_path = argv[i + 1];
-      i++;
-      continue;
+            i++;
+            continue;
         }
-
-    if (strcmp(argv[i], "-name") == 0) {
-      predicate = filter_name;
-    } else if (strcmp(argv[i], "-type") == 0) {
-      predicate = filter_type;
-    } else if (strcmp(argv[i], "-size") == 0) {
-      predicate = filter_size;
-    }
     }
 
     parse_argv_filters(&filter_head, argc, argv);
@@ -53,8 +44,8 @@ int main(int argc,char *argv[]){
         st.st_mtime = info.mtime;
 
         int passes = 1;
-        if (filter_head != NULL && predicate != NULL) {
-          passes = evaluate_filters(filter_head, predicate, info.path, &st);
+        if (filter_head != NULL) {
+          passes = evaluate_filters(filter_head, info.path, &st);
         }
 
         if (passes) {

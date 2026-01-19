@@ -2,16 +2,7 @@
 #include <sys/stat.h>
 #include <fnmatch.h>
 #include <time.h>
-
-typedef struct {
-    long size;
-    char mode;  // '+' = größer als, '-' = kleiner als, '=' = genau
-} size_filter_data;
-
-typedef struct {
-    long days;
-    char mode;  // '+' = älter als, '-' = jünger als, '=' = genau
-} mtime_filter_data;
+#include "filter.h"
 
 int filter_name(const char *path, const struct stat *st, void *data)
 {
