@@ -7,7 +7,6 @@ int main(int argc,char *argv[]){
 
 
     if (argc == 1){
-	// Default
     }else if(argc == 3 && strcmp(argv[1], "-p")== 0){
       start_path = argv[2];
     } else {
@@ -36,7 +35,6 @@ int main(int argc,char *argv[]){
       printf("%s\n", info.path);
 
       fileinfo_free(&info);
-
     }
     iterator_destroy(it);
     return 0;
