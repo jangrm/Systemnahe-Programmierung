@@ -10,8 +10,7 @@ extern "C" {
 
 void print_usage(const char *progname);
 
-
-int parse_cli(int argc, char *argv[], const char **start_path);
+int parse_cli(int argc, char *argv[], const char **start_path, int *use_stdin);
 
 #ifdef __cplusplus
 }
