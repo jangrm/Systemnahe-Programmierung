@@ -14,7 +14,6 @@ int parse_cli(int argc, char *argv[], const char **start_path) {
         return -1;
     }
 
-    /* Default start path */
     *start_path = ".";
 
     for (int i = 1; i < argc; i++) {
@@ -29,12 +28,12 @@ int parse_cli(int argc, char *argv[], const char **start_path) {
                 return -1;
             }
             *start_path = argv[i + 1];
-            i++; /* skip path argument */
+            i++;
             continue;
         }
 
-        /* Everything else (filters etc.) is handled elsewhere */
     }
 
     return 0;
 }
+
