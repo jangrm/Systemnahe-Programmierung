@@ -32,7 +32,7 @@ clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
 # Test (placeholder for now)
-test:
-	@echo "No tests yet."
+test: $(TARGET)
+	sh tests/run_tests.sh
 
 .PHONY: all clean test
