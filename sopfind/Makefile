@@ -31,7 +31,7 @@ $(OBJ_DIR):
 clean:
 	rm -rf $(OBJ_DIR) $(TARGET)
 
-# Test (placeholder for now)
+# Test 
 test: $(TARGET)
 	sh tests/run_tests.sh
 
