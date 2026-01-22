@@ -34,5 +34,6 @@ clean:
 # Test (placeholder for now)
 test: $(TARGET)
 	sh tests/run_tests.sh
+	sh tests/error_tests.sh
 
 .PHONY: all clean test
