@@ -1,7 +1,7 @@
 # Compiler & Flags
 CC      := gcc
-CFLAGS  := -Wall -Wextra -Wpedantic -std=c11 -g -D_POSIX_C_SOURCE=200809L
-LDFLAGS :=
+CFLAGS  := -Wall -Wextra -Wpedantic -std=c11 -g -D_POSIX_C_SOURCE=200809L -pthread
+LDFLAGS := -pthread
 TARGET  := sopfind
 
 # Directories
