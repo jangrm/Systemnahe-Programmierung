@@ -4,17 +4,19 @@
 #include <string.h>
 
 void print_usage(const char *progname) {
-    printf("Usage: %s [-p path] [filters...]\n", progname);
+    printf("Usage: %s [-p path] [--stdin] [filters...]\n", progname);
     printf("  -p, --path PATH    Start path for iteration (default: .)\n");
+    printf("  --stdin            Read paths from stdin (one per line)\n");
     printf("  -h, --help         Show this help message\n");
 }
 
-int parse_cli(int argc, char *argv[], const char **start_path) {
-    if (start_path == NULL) {
+int parse_cli(int argc, char *argv[], const char **start_path, int *use_stdin) {
+    if (start_path == NULL || use_stdin == NULL) {
         return -1;
     }
 
     *start_path = ".";
+    *use_stdin = 0;
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
@@ -32,6 +34,10 @@ int parse_cli(int argc, char *argv[], const char **start_path) {
             continue;
         }
 
+        if (strcmp(argv[i], "--stdin") == 0) {
+            *use_stdin = 1;
+            continue;
+        }
     }
 
     return 0;
