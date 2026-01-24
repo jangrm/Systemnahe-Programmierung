@@ -35,3 +35,8 @@ AI (ChatGPT) was used for:
 - Discussing possible designs of the Traversal core(Recursive vs Stack/Queue based)
 - Debugging of the Traversal Core
 - Getting information on how to implement tests in C
+
+Nino B.:
+AI (Google Gemini) was used for:
+ - Planning the worklfow and commit schedule for the filter-engine
+ - Discussing and Debugging of the filter-engine
