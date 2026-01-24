@@ -34,7 +34,7 @@ static void process_path(const char *path, FilterNode *filter_head) {
         }
 
         if (passes) {
-            printf("%s\n", info.path);
+            fprintf(stdout, "%s\n", info.path);
         }
 
         fileinfo_free(&info);

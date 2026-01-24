@@ -4,10 +4,10 @@
 #include <string.h>
 
 void print_usage(const char *progname) {
-    printf("Usage: %s [-p path] [--stdin] [filters...]\n", progname);
-    printf("  -p, --path PATH    Start path for iteration (default: .)\n");
-    printf("  --stdin            Read paths from stdin (one per line)\n");
-    printf("  -h, --help         Show this help message\n");
+    fprintf(stdout, "Usage: %s [-p path] [--stdin] [filters...]\n", progname);
+    fprintf(stdout, "  -p, --path PATH    Start path for iteration (default: .)\n");
+    fprintf(stdout, "  --stdin            Read paths from stdin (one per line)\n");
+    fprintf(stdout, "  -h, --help         Show this help message\n");
 }
 
 int parse_cli(int argc, char *argv[], const char **start_path, int *use_stdin) {
